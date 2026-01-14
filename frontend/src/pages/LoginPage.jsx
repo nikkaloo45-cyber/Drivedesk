@@ -21,6 +21,16 @@ function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const renderDashboard = () => {
+    console.log('renderDashboard() chiamato - vado alla dashboard');
+    navigate('/dashboard');
+  };
+
+  const mostraErrore = (errorMessage) => {
+    console.log('mostraErrore() chiamato:', errorMessage);
+    setError(errorMessage);
+  };
+
   // Gestione submit form
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,10 +51,10 @@ function LoginPage() {
     
     if (result.success) {
       // Login ok - vado a dashboard
-      navigate('/dashboard');
+      renderDashboard();
     } else {
       // Login fallito - mostro errore
-      setErrore(result.error);
+      mostraErrore(result.error);
     }
   };
 
