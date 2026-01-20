@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { SocketProvider } from './contexts/SocketContext';
+import { AlarmProvider } from './contexts/AlarmContext';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 
-// Protezione rotte
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? children : <Navigate to="/login" replace />;
@@ -30,9 +31,13 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <SocketProvider>
+        <AlarmProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </AlarmProvider>
+      </SocketProvider>
     </AuthProvider>
   );
 }
