@@ -4,6 +4,7 @@ import { SocketProvider } from './contexts/SocketContext';
 import { AlarmProvider } from './contexts/AlarmContext';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import AlarmManager from './components/alarms/AlarmManager';
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -34,6 +35,7 @@ function App() {
       <SocketProvider>
         <AlarmProvider>
           <BrowserRouter>
+            <AlarmManager />
             <AppRoutes />
           </BrowserRouter>
         </AlarmProvider>

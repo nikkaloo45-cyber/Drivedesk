@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useAlarms } from '../../contexts/AlarmContext';
 import {
   Box,
   AppBar,
@@ -13,13 +14,15 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
+  Badge
 } from '@mui/material';
 import {
   Menu as MenuIcon,
   DirectionsCar,
   Warning,
-  Logout
+  Logout,
+  Notifications
 } from '@mui/icons-material';
 
 const DRAWER_WIDTH = 240;
@@ -29,6 +32,7 @@ function DashboardLayout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   
   const { user, logout } = useAuth();
+  const { unseenCount } = useAlarms();
   const navigate = useNavigate();
 
   // Toggle drawer mobile
@@ -113,6 +117,13 @@ function DashboardLayout({ children }) {
             Dashboard
           </Typography>
 
+          {/* Badge notifiche allarmi */}
+          <IconButton color="inherit" sx={{ mr: 2 }}>
+            <Badge badgeContent={unseenCount} color="error">
+              <Notifications />
+            </Badge>
+          </IconButton>
+
           {/* Nome utente */}
           <Typography variant="body2">
             {user?.nome || 'Utente'}
@@ -126,7 +137,7 @@ function DashboardLayout({ children }) {
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
-          keepMounted: true // migliora performance su mobile
+          keepMounted: true // migliora performance su mobile (letto su docs)
         }}
         sx={{
           display: { xs: 'block', sm: 'none' },
