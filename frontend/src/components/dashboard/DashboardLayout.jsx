@@ -24,6 +24,7 @@ import {
   Logout,
   Notifications
 } from '@mui/icons-material';
+import '../../styles/DashboardLayout.css';
 
 const DRAWER_WIDTH = 240;
 
@@ -94,10 +95,11 @@ function DashboardLayout({ children }) {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box className="dashboard-root">
       {/* Barra superiore */}
       <AppBar
         position="fixed"
+        className="custom-appbar"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1
         }}
@@ -119,7 +121,7 @@ function DashboardLayout({ children }) {
 
           {/* Badge notifiche allarmi */}
           <IconButton color="inherit" sx={{ mr: 2 }}>
-            <Badge badgeContent={unseenCount} color="error">
+            <Badge badgeContent={unseenCount} color="error" className="notification-badge">
               <Notifications />
             </Badge>
           </IconButton>
@@ -153,12 +155,10 @@ function DashboardLayout({ children }) {
       {/* Drawer per desktop (sempre aperto) */}
       <Drawer
         variant="permanent"
+        className="custom-drawer"
         sx={{
           display: { xs: 'none', sm: 'block' },
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
-            width: DRAWER_WIDTH
-          }
+          '& .MuiDrawer-paper': { width: DRAWER_WIDTH}
         }}
         open
       >
@@ -173,7 +173,6 @@ function DashboardLayout({ children }) {
           p: 3,
           mt: 8,
           ml: { sm: `${DRAWER_WIDTH}px` }, // margine per compensare drawer desktop
-          minHeight: '100vh'
         }}
       >
         {children}

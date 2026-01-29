@@ -1,0 +1,35 @@
+/* Wrapper principale */
+.dashboard-root {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f8; /* Grigio chiaro custom */
+}
+
+/* Sidebar personalizzata */
+.custom-drawer .MuiDrawer-paper {
+  background-color: #1a237e !important; /* Blu scuro custom */
+  color: white !important;
+  border-right: none !important;
+}
+
+.custom-drawer .MuiListItemIcon-root {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.custom-drawer .MuiTypography-root {
+  font-weight: 500;
+}
+
+/* Appbar personalizzata */
+.custom-appbar {
+  background-color: white !important;
+  color: #333 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12) !important;
+}
+
+/* Badge notifiche custom */
+.notification-badge .MuiBadge-badge {
+  background-color: #d32f2f;
+  border: 2px solid white;
+}
+
