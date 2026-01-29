@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
                 messaggio: `Allarme rilevato: ${guasto}`,
                 idAllarme: nuovoAllarme._id
             });
-            console.log(`Allarme collegato al veicolo: ${targa}`);
+            console.log(`Attenzione, allarme per il veicolo: ${targa}`);
         }
 
         //Salvo i dati aggiornati

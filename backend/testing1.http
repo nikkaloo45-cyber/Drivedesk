@@ -1,0 +1,43 @@
+### REGISTRAZIONE
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "testing@drivedesk.it",
+  "password": "test123",
+  "ruolo": "Manager"
+}
+
+### LOGIN
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testing@drivedesk.it",
+  "password": "test123"
+}
+
+### CREA VEICOLO (token)
+POST http://localhost:5000/api/veicoli
+Content-Type: application/json
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk3YmVhMmJhZTFjNjg2ODk4YTZiNzg5IiwicnVvbG8iOiJNYW5hZ2VyIn0sImlhdCI6MTc2OTcyODU2OCwiZXhwIjoxNzcwMDg4NTY4fQ.-NhaheJt_VrDqAyZOsr9SBdb-gQUf4v31Nq3CzuVsH4
+
+{
+  "targa": "Test9999999",
+  "nomeAutista": "Mario Rossi",
+  "numeroAutista": "333000000",
+  "stato": "sosta"
+}
+
+### 4. SIMULAZIONE SENSORE (Telemetria + Guasto)
+POST http://localhost:5000/api/telemetria
+Content-Type: application/json
+
+{
+  "targa": "Test9999999",
+  "lat": 45.123,
+  "lon": 9.456,
+  "velocita": 90,
+  "livelloCarburante": 10,
+  "guasto": "Surriscaldamento Motore"
+}
