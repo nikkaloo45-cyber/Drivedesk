@@ -6,7 +6,7 @@ const veicoloSchema = new mongoose.Schema({
     stato: {type: String, enum: ['movimento', 'sosta', 'allarme'], default: 'sosta'},
     livelloCarburante: {type: Number, default: 100},
     velocita: {type: Number, default: 0},
-    posizione: {type: String},
+    posizione: {type: String},  //latitudine,longitudine (es: 99.80,35.23)
     ultimoAggiornamento: {type: Date, default: Date.now}
 });
 module.exports = mongoose.model('Veicolo', veicoloSchema);

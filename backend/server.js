@@ -39,7 +39,7 @@ app.get('/', (req, res) => res.send('Server in esecuzione'));
 app.use('/api/auth', require('./routes/auth')); //collegamento rotte auth
 app.use('/api/veicoli', require('./routes/veicoli')); //collegamento rotte veicoli
 app.use('/api/allarmi', require('./routes/allarmi')); //collegamento rotte allarmi
-app.use('........'); //collegamento rotta telemetria (DA CREARE)
+app.use('/api/telemetria', require('./routes/telemetria')); //collegamento rotte telemetria
 
 //Avvio server real-time
 const PORT = process.env.PORT || 5000;
