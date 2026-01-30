@@ -1,0 +1,117 @@
+/* Card principale del veicolo */
+.vehicle-card {
+  height: 100%;
+  transition: all 0.2s;
+  border-radius: 8px !important;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Header della card (icona + targa + chip) */
+.vehicle-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Box con icona e targa */
+.vehicle-targa-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vehicle-icon {
+  color: #1a237e !important;
+  font-size: 28px !important;
+}
+
+.vehicle-targa {
+  font-weight: 600 !important;
+  color: #1a237e;
+}
+
+/* Customizzazione Chip MUI per stati */
+.status-chip-success {
+  background-color: #e8f5e9 !important;
+  color: #2e7d32 !important;
+  border: 1px solid #4caf50 !important;
+  font-weight: 600 !important;
+}
+
+.status-chip-warning {
+  background-color: #fff3e0 !important;
+  color: #e65100 !important;
+  border: 1px solid #ff9800 !important;
+  font-weight: 600 !important;
+}
+
+.status-chip-default {
+  background-color: #f5f5f5 !important;
+  color: #666 !important;
+  border: 1px solid #bdbdbd !important;
+  font-weight: 600 !important;
+}
+
+/* Sezione info autista */
+.vehicle-info-section {
+  margin: 16px 0;
+}
+
+.vehicle-info {
+  margin-bottom: 8px !important;
+  color: #555 !important;
+  font-size: 14px !important;
+  text-decoration: none !important;
+  border: none !important;
+  border-top: none !important;
+}
+
+/* Label info (bold) */
+.vehicle-info-label {
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+/* Override stili MUI Typography */
+.vehicle-info.MuiTypography-root {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+}
+
+/* Sezione GPS */
+.vehicle-gps-section {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.vehicle-gps-icon {
+  color: #1a237e !important;
+  margin-right: 8px;
+  font-size: 20px !important;
+}
+
+.vehicle-gps-text {
+  font-size: 12px !important;
+  color: #666 !important;
+  font-family: 'Courier New', monospace;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .vehicle-targa {
+    font-size: 1.1rem !important;
+  }
+  
+  .vehicle-icon {
+    font-size: 24px !important;
+  }
+}
+
