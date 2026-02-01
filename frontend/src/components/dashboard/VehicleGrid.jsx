@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Grid, Typography, Box, CircularProgress, Alert, Button } from '@mui/material';
 import VehicleCard from './VehicleCard';
 import { useAlarms } from '../../contexts/AlarmContext';
+import '../../styles/VehicleGrid.css';
 
 /**
  * VehicleGrid - Visualizzazione griglia veicoli
@@ -99,13 +100,13 @@ function VehicleGrid() {
   // Mostro spinner durante caricamento
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-        <CircularProgress />
+      <Box className="loading-container">
+        <CircularProgress size={60} />
       </Box>
     );
   }
 
-  // Mostro errore se qualcosa va storto
+  // Mostro errore se qualcosa va storto (uso Alert MUI default - no CSS)
   if (error) {
     return <Alert severity="error">{error}</Alert>;
   }
@@ -113,30 +114,36 @@ function VehicleGrid() {
   return (
     <Box>
       {/* Header con titolo e pulsante test */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4">
+      <Box className="vehicle-grid-header">
+        <Typography variant="h4" className="vehicle-grid-title">
           Flotta Veicoli ({vehicles.length})
         </Typography>
         
         {/* Pulsante per testare allarmi - rimuovere in produzione */}
         <Button
           variant="outlined"
-          color="error"
           onClick={simulateAlarm}
+          className="test-alarm-button"
         >
           🧪 Simula Allarme
         </Button>
-      </Box>
-
+     </Box>
+     
       {/* Griglia veicoli - Zeimpekis pag. 162 suggerisce layout responsive */}
-      <Grid container spacing={3}>
+      <Grid container spacing={3} className="custom-grid-container">
         {vehicles.map((vehicle) => (
-          <Grid item xs={12} sm={6} md={4} key={vehicle.id}>
+          <Grid item 
+            xs={12}    // Mobile: 1 colonna
+            sm={6}     // Tablet: 2 colonne
+            md={4}     // Desktop: 3 colonne
+            key={vehicle.id}
+            className="custom-grid-item"
+          >
             <VehicleCard vehicle={vehicle} />
-          </Grid>
+          </Grid> 
         ))}
-      </Grid>
-
+      </Grid> 
+      
       {/* Messaggio se nessun veicolo */}
       {vehicles.length === 0 && (
         <Typography color="text.secondary" sx={{ mt: 3 }}>
