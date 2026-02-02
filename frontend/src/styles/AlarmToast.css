@@ -1,0 +1,36 @@
+/* Snackbar container personalizzato */
+.alarm-toast-snackbar {
+  z-index: 9999 !important;
+}
+
+/* Alert personalizzato per allarmi */
+.alarm-toast-alert {
+  min-width: 350px;
+  border-left: 5px solid #d32f2f !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* Bottone presa visione */
+.alarm-toast-button {
+  font-weight: 600 !important;
+  text-transform: none !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+  padding: 4px 12px !important;
+  transition: 0.2s;
+}
+
+.alarm-toast-button:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Mobile - toast più stretto */
+@media (max-width: 768px) {
+  .alarm-toast-alert {
+    min-width: 280px;
+    font-size: 13px !important;
+  }
+}
+

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Snackbar, Alert, Button } from '@mui/material';
 import { useAlarms } from '../../contexts/AlarmContext';
+import '../../styles/AlarmToast.css';
 
 /**
  * AlarmToast - Notifica popup per singolo allarme
@@ -62,17 +63,19 @@ function AlarmToast({ alarm }) {
       open={open}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       onClose={handleClose}
+      className="alarm-toast-snackbar"
     >
       <Alert
         severity="error"
         variant="filled"
         onClose={handleClose}
+        className="alarm-toast-alert"
         action={
           <Button
             color="inherit"
             size="small"
             onClick={() => clickPresaVisione(alarm.id)}
-            sx={{ fontWeight: 'bold' }}
+            className="alarm-toast-button"
           >
             Presa Visione
           </Button>
