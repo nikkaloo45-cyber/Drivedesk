@@ -7,6 +7,6 @@ const auth = require('../middleware/authMiddleware');
 router.get('/', auth, allarmiController.getAllarmi);
 
 // PATCH aggiorna allarme
-router.patch('/:id', allarmiController.aggiornaAllarme);
+router.patch('/:id', auth, allarmiController.aggiornaAllarme);
 
 module.exports = router;
