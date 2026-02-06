@@ -1,50 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Grid, Typography, Box, CircularProgress, Alert, Button } from '@mui/material';
+import { Grid, Typography, Box, CircularProgress, Alert } from '@mui/material';
 import VehicleCard from './VehicleCard';
-import { useAlarms } from '../../contexts/AlarmContext';
+import { vehiclesAPI } from '../../services/api';
 import '../../styles/VehicleGrid.css';
 
 /**
- * VehicleGrid - Visualizzazione griglia veicoli
+ * VehicleGrid - Dashboard per visualizzazione flotta veicoli
  * 
- * Pattern di visualizzazione dati in real-time da:
+ * Carica lista veicoli al mount iniziale e mostra in grid responsive.
+ * 
+ * Pattern UI da:
  * - Zeimpekis et al. [1] pag. 156-162 "Fleet Dashboard Design"
- * - Implementa requisiti monitoraggio real-time descritti nel paper
+ * - Layout responsive pag. 162
  */
-
-// Dati veicoli mock - Zeimpekis pag. 158 descrive struttura dati simile
-const MOCK_VEHICLES = [
-  {
-    id: 1,
-    targa: 'AB123CD',
-    stato: 'In viaggio',
-    posizione: { lat: 40.8518, lng: 14.2681 },
-    nomeAutista: 'Mario Rossi',
-    numeroAutista: '+39 333 1234567'
-  },
-  {
-    id: 2,
-    targa: 'EF456GH',
-    stato: 'In manutenzione',
-    posizione: { lat: 40.8555, lng: 14.2702 },
-    nomeAutista: 'Luigi Verdi',
-    numeroAutista: '+39 333 9876543'
-  },
-  {
-    id: 3,
-    targa: 'IJ789KL',
-    stato: 'Fermo',
-    posizione: { lat: 40.8490, lng: 14.2655 },
-    nomeAutista: 'Giuseppe Bianchi',
-    numeroAutista: '+39 333 5555555'
-  }
-];
 
 function VehicleGrid() {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { addAlarm } = useAlarms();
 
   // Carico veicoli quando componente si monta
   useEffect(() => {
@@ -57,21 +30,21 @@ function VehicleGrid() {
   };
 
   // Zeimpekis [1] pag. 160 - "Real-time data fetching requirements"
+  // Modificato per usare backend reale invece di dati mock
   const getListaVeicoli = async () => {
     try {
       setLoading(true);
-      console.log('getListaVeicoli() - carico veicoli...');
+      console.log('getListaVeicoli() - carico veicoli da backend...');
       
-      // Simulo chiamata API con delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      const datiVeicoli = MOCK_VEHICLES;
+      // Chiamata GET /api/veicoli per ottenere lista veicoli
+      // Zeimpekis [1] pag. 161 descrive struttura simile con REST API
+      const datiVeicoli = await vehiclesAPI.getAll();
       console.log('Dati veicoli ricevuti:', datiVeicoli.length);
       
       renderGriglia(datiVeicoli);
     } catch (err) {
       console.error('Errore caricamento veicoli:', err);
-      setError('Errore nel caricamento dei veicoli');
+      setError(err.message || 'Errore nel caricamento dei veicoli');
     } finally {
       setLoading(false);
     }
@@ -81,20 +54,6 @@ function VehicleGrid() {
   const renderGriglia = (datiVeicoli) => {
     console.log('renderGriglia() chiamato con', datiVeicoli.length, 'veicoli');
     setVehicles(datiVeicoli);
-  };
-
-  // Funzione per simulare allarme (solo per testing)
-  // Serve per testare sistema notifiche senza backend
-  const simulateAlarm = () => {
-    console.log('Simulo allarme per test...');
-    const testAlarm = {
-      id: Date.now(),
-      targa: 'TEST999',
-      tipo: 'Allarme di test',
-      stato: 'Nuovo',
-      timestamp: new Date().toISOString()
-    };
-    addAlarm(testAlarm);
   };
 
   // Mostro spinner durante caricamento
@@ -113,30 +72,19 @@ function VehicleGrid() {
 
   return (
     <Box>
-      {/* Header con titolo e pulsante test */}
+      {/* Header con titolo */}
       <Box className="vehicle-grid-header">
         <Typography variant="h4" className="vehicle-grid-title">
           Flotta Veicoli ({vehicles.length})
         </Typography>
-        
-        {/* Pulsante per testare allarmi - rimuovere in produzione */}
-        <Button
-          variant="outlined"
-          onClick={simulateAlarm}
-          className="test-alarm-button"
-        >
-          🧪 Simula Allarme
-        </Button>
      </Box>
      
       {/* Griglia veicoli - Zeimpekis pag. 162 suggerisce layout responsive */}
       <Grid container spacing={3} className="custom-grid-container">
         {vehicles.map((vehicle) => (
-          <Grid item 
-            xs={12}    // Mobile: 1 colonna
-            sm={6}     // Tablet: 2 colonne
-            md={4}     // Desktop: 3 colonne
-            key={vehicle.id}
+          <Grid 
+            key={vehicle._id}
+            size={{ xs: 12, sm: 6, md: 4 }}
             className="custom-grid-item"
           >
             <VehicleCard vehicle={vehicle} />

@@ -4,8 +4,6 @@ import { useAlarms } from '../../contexts/AlarmContext';
 import '../../styles/AlarmToast.css';
 
 /**
- * AlarmToast - Notifica popup per singolo allarme
- * 
  * UI Pattern da Porteneuve [3] pag. 122 "Toast Notifications"
  * Integrato con Material-UI Snackbar component
  * 
@@ -41,7 +39,6 @@ function AlarmToast({ alarm }) {
     //   body: JSON.stringify({ stato: 'Visto' })
     // });
     
-    // Per ora aggiorno solo stato locale tramite Context
     markAsSeen(idAllarme);
   };
 
@@ -83,7 +80,7 @@ function AlarmToast({ alarm }) {
       >
         <strong>🚨 Nuovo Allarme!</strong><br />
         Veicolo: {alarm.targa}<br />
-        Tipo: {alarm.tipo}
+        Causa: {alarm.causa}
       </Alert>
     </Snackbar>
   );

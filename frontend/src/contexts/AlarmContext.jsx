@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { alarmsAPI } from '../services/api';
+import { socketService } from '../services/socket';
 
 const AlarmContext = createContext();
 
@@ -21,6 +23,69 @@ export function AlarmProvider({ children }) {
   // per aggiornare badge UI in real-time
   const [unseenCount, setUnseenCount] = useState(0);
 
+  // Flag per evitare doppi fetch
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Caricamento iniziale allarmi + setup Socket.IO real-time
+  // Porteneuve [3] pag. 101 "Reactive UI updates with WebSockets"
+  useEffect(() => {
+    if (isInitialized) return;
+
+    // Carica storico allarmi da backend
+    fetchAlarms();
+
+    // Listener Socket.IO per nuovi allarmi real-time
+    // Pattern Observer - Porteneuve [3] pag. 101
+    socketService.onNewAlarm((socketAlarm) => {
+      console.log('🚨 Nuovo allarme ricevuto:', socketAlarm);
+      
+      const newAlarm = {
+        id: socketAlarm.idAllarme,
+        targa: socketAlarm.targa,
+        causa: socketAlarm.messaggio,
+        stato: 'nuovo',
+        timestamp: new Date().toISOString()
+      };
+      
+      addAlarm(newAlarm);
+    });
+
+    setIsInitialized(true);
+
+    // Cleanup quando componente si smonta
+    return () => {
+      socketService.offNewAlarm();
+    };
+  }, [isInitialized]);
+
+  // Fetch allarmi iniziale da GET /api/allarmi
+  // Porteneuve [3] pag. 87 "GET requests with CORS"
+  const fetchAlarms = async () => {
+    try {
+      console.log('Carico storico allarmi da backend...');
+      const backendAlarms = await alarmsAPI.getAll();
+      
+      const formattedAlarms = backendAlarms.map(alarm => ({
+        id: alarm._id,
+        targa: alarm.veicolo?.targa || 'N/A',
+        causa: alarm.causa,
+        categoria: alarm.categoria,
+        stato: alarm.stato,
+        timestamp: alarm.timestamp
+      }));
+      
+      setAlarms(formattedAlarms);
+      
+      // Calcola quanti allarmi sono "nuovo" (non visti)
+      const newCount = formattedAlarms.filter(a => a.stato === 'nuovo').length;
+      setUnseenCount(newCount);
+      
+      console.log(`Caricati ${formattedAlarms.length} allarmi (${newCount} non visti)`);
+    } catch (error) {
+      console.error('Errore caricamento allarmi:', error);
+    }
+  };
+
   // Funzione per aggiungere nuovo allarme alla lista
   // Pattern "Event Append" - Porteneuve [3] pag. 94
   const addAlarm = (alarm) => {
@@ -36,22 +101,30 @@ export function AlarmProvider({ children }) {
 
   // Funzione per marcare allarme come visto
   // Porteneuve [3] pag. 98 - "State Update Pattern"
-  const markAsSeen = (alarmId) => {
+  const markAsSeen = async (alarmId) => {
     console.log('Marco allarme come visto:', alarmId);
     
-    // Aggiorno stato dell'allarme specifico
-    // Porteneuve [3] pag. 97-99 - principio di immutabilità
-    setAlarms(prevAlarms =>
-      prevAlarms.map(alarm => {
-        if (alarm.id === alarmId) {
-          return { ...alarm, stato: 'Visto' };
-        }
-        return alarm;
-      })
-    );
-    
-    // Decremento contatore (ma non deve andare sotto zero)
-    setUnseenCount(prevCount => Math.max(0, prevCount - 1));
+    try {
+      // PATCH /api/allarmi/:id - aggiorna stato su backend
+      // Porteneuve [3] pag. 87 "PATCH requests with CORS"
+      await alarmsAPI.updateStatus(alarmId, 'gestione');
+      
+      // Aggiorna stato dell'allarme specifico
+      // Porteneuve [3] pag. 97-99 - principio di immutabilità
+      setAlarms(prevAlarms =>
+        prevAlarms.map(alarm => {
+          if (alarm.id === alarmId) {
+            return { ...alarm, stato: 'gestione' };
+          }
+          return alarm;
+        })
+      );
+      
+      // Decremento contatore (ma non deve andare sotto zero)
+      setUnseenCount(prevCount => Math.max(0, prevCount - 1));
+    } catch (error) {
+      console.error('Errore aggiornamento allarme:', error);
+    }
   };
 
   // Funzione per pulire tutti gli allarmi
@@ -67,7 +140,8 @@ export function AlarmProvider({ children }) {
     unseenCount: unseenCount,
     addAlarm: addAlarm,
     markAsSeen: markAsSeen,
-    clearAlarms: clearAlarms
+    clearAlarms: clearAlarms,
+    refreshAlarms: fetchAlarms
   };
 
   return (

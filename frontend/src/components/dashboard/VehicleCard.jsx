@@ -5,28 +5,29 @@ import '../../styles/VehicleCard.css';
 // Card singola per mostrare info veicolo
 function VehicleCard({ vehicle }) {
   
-  // Funzione per decidere colore chip in base allo stato
-  const getStatoColor = (stato) => {
-    if (stato === 'In viaggio') {
-      return 'success'; // verde
-    }
-    if (stato === 'In manutenzione') {
-      return 'warning'; // arancione
-    }
-    return 'default'; // grigio per "Fermo"
+   const getStatoLabel = (stato) => {
+    const labels = {
+      'movimento': 'In viaggio',
+      'sosta': 'Fermo',
+      'allarme': 'Allarme'
+    };
+    return labels[stato] || stato;
   };
+   
+  // Funzione per decidere colore chip in base allo stato
+   const getStatoColor = (stato) => {
+    if (stato === 'movimento') return 'success';   // verde
+    if (stato === 'allarme') return 'error';       // rosso
+    return 'default'; // grigio per "sosta"
+   };
 
   // Funzione per aggiungere classe CSS custom al Chip
-  const getChipClassName = (stato) => {
-    if (stato === 'In viaggio') {
-      return 'status-chip-success';
-    }
-    if (stato === 'In manutenzione') {
-      return 'status-chip-warning';
-    }
+   const getChipClassName = (stato) => {
+    if (stato === 'movimento') return 'status-chip-success';
+    if (stato === 'allarme') return 'status-chip-warning';
     return 'status-chip-default';
-  };
-
+   };
+  
   return (
     <Card className="vehicle-card">
       <CardContent>
@@ -59,12 +60,11 @@ function VehicleCard({ vehicle }) {
         </Typography>
 
         {/* Posizione GPS se disponibile */}
-        {vehicle.posizione && (
+        {vehicle.posizione && vehicle.posizione !== '0,0' && (
           <Box className="vehicle-gps-section">
             <LocationOnIcon className="vehicle-gps-icon" />
             <Typography variant="caption" className="vehicle-gps-text">
-              📍 Lat: {vehicle.posizione.lat.toFixed(4)}, 
-              Lng: {vehicle.posizione.lng.toFixed(4)}
+              📍 GPS: {vehicle.posizione}
             </Typography>
           </Box>
         )}

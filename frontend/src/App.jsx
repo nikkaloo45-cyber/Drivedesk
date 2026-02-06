@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { SocketProvider } from './contexts/SocketContext';
 import { AlarmProvider } from './contexts/AlarmContext';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -31,16 +30,14 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <SocketProvider>
-        <AlarmProvider>
-          <BrowserRouter>
-            <AlarmManager />
+    <BrowserRouter>
+      <AuthProvider>
+          <AlarmProvider>
+            <AlarmManager /> 
             <AppRoutes />
-          </BrowserRouter>
-        </AlarmProvider>
-      </SocketProvider>
-    </AuthProvider>
+          </AlarmProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

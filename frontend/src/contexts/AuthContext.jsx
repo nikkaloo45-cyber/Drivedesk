@@ -1,73 +1,75 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { authAPI } from '../services/api';
+import { socketService } from '../services/socket';
 
 const AuthContext = createContext();
-
-// Dati utente mock per testing
-const MOCK_USER = {
-  email: 'manager@drivedesk.it',
-  password: 'password123',
-  nome: 'Mario Rossi',
-  ruolo: 'Manager'
-};
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Funzione per fare login
-  const login = (email, password) => {
-    console.log('Tentativo login con:', email);
-    
-    // Controllo semplice - confronto con utente mock
-    if (email === MOCK_USER.email && password === MOCK_USER.password) {
-      console.log('Login riuscito!');
-      setUser(MOCK_USER);
+  // Controlla se c'è un token salvato all'avvio
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setUser({ email: 'Utente', ruolo: 'Manager' });
       setIsAuthenticated(true);
+      socketService.connect();
+    }
+    setLoading(false);
+  }, []);
+
+  // Funzione LOGIN
+  const login = async (email, password) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const { token } = await authAPI.login(email, password);
+      
+      localStorage.setItem('token', token);
+      setUser({ email, ruolo: 'Manager' });
+      setIsAuthenticated(true);
+      socketService.connect();
+      
       return { success: true };
-    } else {
-      console.log('Login fallito - credenziali sbagliate');
-      return { success: false, error: 'Email o password non corretti' };
+    } catch (err) {
+      setError(err.message);
+      return { success: false, error: err.message };
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Funzione logout
+  // Funzione LOGOUT
   const logout = () => {
-    console.log('Logout utente:', user?.nome);
+    console.log('Logout chiamato dal Context');
+    localStorage.removeItem('token');
+    socketService.disconnect();
     setUser(null);
     setIsAuthenticated(false);
+    setError(null);
   };
 
-  // Funzione per controllare se user è autenticato
-  const checkAuth = () => {
-    return isAuthenticated;
+  // Value passato ai componenti
+  const value = { 
+    user, 
+    isAuthenticated, 
+    loading, 
+    error,
+    login,
+    logout
   };
 
-  // Metto tutti i valori in un oggetto
-  // così posso passarli ai componenti figli
-  const value = {
-    user: user,
-    isAuthenticated: isAuthenticated,
-    login: login,
-    logout: logout,
-    checkAuth: checkAuth
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Hook personalizzato per usare auth nei componenti
+// Hook per usare il Context
 export function useAuth() {
   const context = useContext(AuthContext);
-  
-  // Controllo che sia usato dentro Provider
   if (!context) {
-    console.error('ERRORE: useAuth deve essere usato dentro AuthProvider!');
+    throw new Error('useAuth deve essere usato dentro AuthProvider');
   }
-  
   return context;
 }
-
