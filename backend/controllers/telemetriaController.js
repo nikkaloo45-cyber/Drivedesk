@@ -1,5 +1,5 @@
 const Veicolo = require('../models/Veicolo');
-const Allarme = require('../models/allarme');
+const Allarme = require('../models/Allarme');
 const req = require("express/lib/request");
 
 exports.postTelemetria = async (req, res) => {

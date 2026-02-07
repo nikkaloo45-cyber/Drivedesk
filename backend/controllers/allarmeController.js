@@ -1,4 +1,4 @@
-const Allarme = require('../models/allarme');
+const Allarme = require('../models/Allarme');
 
 // Ottieni lo storico degli allarmi
 exports.getAllarmi = async (req, res) => {
