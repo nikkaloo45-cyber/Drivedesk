@@ -17,7 +17,8 @@ function LoginPage() {
   // Stati per email e password
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [localError, setLocalError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -29,15 +30,15 @@ function LoginPage() {
 
   const mostraErrore = (errorMessage) => {
     console.log('mostraErrore() chiamato:', errorMessage);
-    setError(errorMessage);
+    setLocalError(errorMessage);
   };
 
   // Gestione submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // pulisco errori precedenti
+    setLocalError(''); // pulisco errori precedenti
     
-         // Validazione base
+    // Validazione base
     if (!email) {
       mostraErrore('Inserisci una email');
       return;
@@ -48,14 +49,25 @@ function LoginPage() {
     }
 
     console.log('Provo login...');
-    const result = login(email, password);
+    setLoading(true);
+    
+    try {
+      const result = await login(email, password);
 
-    if (result.success) {
-      // Login ok - vado a dashboard
-      renderDashboard();
-    } else {
-      // Login fallito - mostro errore
-      mostraErrore(result.error);
+      if (result.success) {
+        // Login ok - vado a dashboard
+        console.log('Login riuscito!');
+        renderDashboard();
+      } else {
+        // Login fallito - mostro errore
+        mostraErrore(result.error || 'Credenziali non valide');
+      }
+    } catch (err) {
+      // Errori imprevisti (es. login() crashato)
+      console.error('Errore durante login:', err);
+      mostraErrore('Errore di connessione al server');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,9 +88,9 @@ function LoginPage() {
           </Box>
           
           {/* Messaggio errore */}
-          {error && (
+          {localError && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+              {localError}
             </Alert>
           )}
 
@@ -91,7 +103,8 @@ function LoginPage() {
               margin="normal"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="manager@drivedesk.it"
+              placeholder="testing@drivedesk.it"
+              disabled={loading}
             />
 
             <TextField
@@ -101,7 +114,8 @@ function LoginPage() {
               margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="password123"
+              placeholder="test123"
+              disabled={loading}
             />
 
             <Button
@@ -109,9 +123,10 @@ function LoginPage() {
               variant="contained"
               fullWidth
               size="large"
+              disabled={loading}
               sx={{ mt: 3 }}
             >
-              Accedi
+              {loading ? 'Accesso in corso...' : 'Accedi'}
             </Button>
           </form>
           
@@ -121,7 +136,7 @@ function LoginPage() {
               Credenziali Demo:
             </Typography>
             <Box className="demo-text">
-              manager@drivedesk.it / password123
+              testing@drivedesk.it / test123
             </Box>
           </Box>
 
@@ -131,5 +146,5 @@ function LoginPage() {
   );
 }
 
- 
 export default LoginPage;
+
