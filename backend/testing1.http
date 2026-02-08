@@ -20,14 +20,14 @@ Content-Type: application/json
 ### CREA VEICOLO (token)
 POST http://localhost:5000/api/veicoli
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk3YmVhMmJhZTFjNjg2ODk4YTZiNzg5IiwicnVvbG8iOiJNYW5hZ2VyIn0sImlhdCI6MTc3MDEzMzM1OSwiZXhwIjoxNzcwNDkzMzU5fQ.rFg8tI5bA_BFRXTd83Tuos1Sl11oK9mWWgygy0c9Yb4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk3YmVhMmJhZTFjNjg2ODk4YTZiNzg5IiwicnVvbG8iOiJNYW5hZ2VyIn0sImlhdCI6MTc3MDU0MTg2OSwiZXhwIjoxNzcwOTAxODY5fQ.mHM3C47HrrX3djbLSkk5iqdZPsex-aiCBjtE7pvPqL0
 
 {
-  "targa": "GF 728 ZR",
-  "nomeAutista": "Guido Verdi",
-  "numeroAutista": "333008260",
+  "targa": "XZ 904 HP",
+  "nomeAutista": "Davide Montesi",
+  "numeroAutista": "3516674820",
   "stato": "sosta",
-  "posizione": "46.2, 97.621"
+  "posizione": "35.72, 27.58"
 }
 
 ### SIMULAZIONE SENSORE (Telemetria + Guasto)
@@ -35,9 +35,9 @@ POST http://localhost:5000/api/telemetria
 Content-Type: application/json
 
 {
-  "targa": "GF 728 ZR",
-  "posizione": "89.22, 54.32",
-  "velocita": 90,
-  "livelloCarburante": 10,
-  "guasto": "Surriscaldamento Motore"
+  "targa": "XZ 904 HP",
+  "posizione": "35.72, 27.58",
+  "velocita": 55,
+  "livelloCarburante": 40,
+  "guasto": ""
 }
