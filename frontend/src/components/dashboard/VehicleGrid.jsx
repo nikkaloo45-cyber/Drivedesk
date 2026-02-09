@@ -11,7 +11,6 @@ import '../../styles/VehicleGrid.css';
  * 
  * Pattern UI da:
  * - Zeimpekis et al. [1] pag. 156-162 "Fleet Dashboard Design"
- * - Layout responsive pag. 162
  */
 
 function VehicleGrid() {

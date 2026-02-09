@@ -13,23 +13,27 @@ export function AuthProvider({ children }) {
   // Controlla se c'è un token salvato all'avvio
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      setUser({ email: 'Utente', ruolo: 'Manager' });
+    const savedUser = localStorage.getItem('user');
+    if (token && savedUser) {
+      setUser(JSON.parse(savedUser));
       setIsAuthenticated(true);
       socketService.connect();
     }
     setLoading(false);
   }, []);
 
+
   // Funzione LOGIN
   const login = async (email, password) => {
     try {
       setError(null);
       setLoading(true);
-      const { token } = await authAPI.login(email, password);
+      const { token, user } = await authAPI.login(email, password);
       
       localStorage.setItem('token', token);
-      setUser({ email, ruolo: 'Manager' });
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      setUser(user);
       setIsAuthenticated(true);
       socketService.connect();
       
@@ -46,6 +50,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     console.log('Logout chiamato dal Context');
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     socketService.disconnect();
     setUser(null);
     setIsAuthenticated(false);

@@ -128,7 +128,7 @@ function DashboardLayout({ children }) {
 
           {/* Nome utente */}
           <Typography variant="body2">
-            {user?.nome || 'Utente'}
+            {user?.email} • {user?.ruolo || 'Manager'}
           </Typography>
         </Toolbar>
       </AppBar>

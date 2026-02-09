@@ -8,9 +8,6 @@ import AlarmToast from './AlarmToast';
  * 
  * Riceve allarmi dal Context e renderizza toast per quelli non ancora visti.
  * 
- * Pattern UI toast rendering:
- * - Porteneuve [3], Cap. 6 "Visual Notifications" pag. 120-125
- * 
  * Nota: La ricezione real-time via Socket.IO è gestita in AlarmContext.
  */
  

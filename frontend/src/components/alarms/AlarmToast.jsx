@@ -4,7 +4,6 @@ import { useAlarms } from '../../contexts/AlarmContext';
 import '../../styles/AlarmToast.css';
 
 /**
- * UI Pattern da Porteneuve [3] pag. 122 "Toast Notifications"
  * Integrato con Material-UI Snackbar component
  * 
  * Metodi seguono diagramma UML sequenze caso d'uso "Presa Visione"
@@ -32,13 +31,6 @@ function AlarmToast({ alarm }) {
   const setAllarmeVisto = (idAllarme) => {
     console.log('setAllarmeVisto() - aggiorno stato locale');
     
-    // Come descritto in Hossain [4] pag. 87 "PATCH requests with CORS"
-    // await fetch(`/api/alarms/${idAllarme}`, {
-    //   method: 'PATCH',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ stato: 'Visto' })
-    // });
-    
     markAsSeen(idAllarme);
   };
 
@@ -47,7 +39,6 @@ function AlarmToast({ alarm }) {
     console.log('aggiornaIconaVisto() - il Context decrementa unseenCount automaticamente');
     // Il badge si aggiorna automaticamente tramite Context
     // perché markAsSeen() decrementa unseenCount
-    // Pattern Observer - Porteneuve [3] pag. 101 "Reactive UI updates"
   };
 
   // Chiudo toast senza presa visione (click X)

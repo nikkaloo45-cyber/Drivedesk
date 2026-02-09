@@ -6,17 +6,10 @@ const AlarmContext = createContext();
 
 /**
  * AlarmProvider - Gestisce stato degli allarmi real-time
- * 
- * Architettura ispirata a:
- * - Porteneuve [3], Cap. 5 "Client-Side State Management" (pag. 89-105)
- * - Pattern "Event Store" descritto pag. 92
- * 
- * Ho usato React useState invece del loro approccio custom perché
- * più semplice da integrare con Context API
+ * Fornisce funzioni per gestire allarmi (nuovo -> gestione -> risolto)
  */
 export function AlarmProvider({ children }) {
   // Lista di tutti gli allarmi ricevuti
-  // Porteneuve [3] pag. 92 - mantiene storico eventi per replay
   const [alarms, setAlarms] = useState([]);
   
   // Contatore allarmi non ancora visti
@@ -26,19 +19,16 @@ export function AlarmProvider({ children }) {
   // Flag per evitare doppi fetch
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Caricamento iniziale allarmi + setup Socket.IO real-time
-  // Porteneuve [3] pag. 101 "Reactive UI updates with WebSockets"
-  useEffect(() => {
+    // Caricamento iniziale allarmi + setup Socket.IO real-time
+    useEffect(() => {
     if (isInitialized) return;
 
     // Carica storico allarmi da backend
     fetchAlarms();
 
     // Listener Socket.IO per nuovi allarmi real-time
-    // Pattern Observer - Porteneuve [3] pag. 101
     socketService.onNewAlarm((socketAlarm) => {
       console.log('🚨 Nuovo allarme ricevuto:', socketAlarm);
-      
       const newAlarm = {
         id: socketAlarm.idAllarme,
         targa: socketAlarm.targa,
@@ -46,7 +36,6 @@ export function AlarmProvider({ children }) {
         stato: 'nuovo',
         timestamp: new Date().toISOString()
       };
-      
       addAlarm(newAlarm);
     });
 
@@ -59,8 +48,15 @@ export function AlarmProvider({ children }) {
   }, [isInitialized]);
 
   // Fetch allarmi iniziale da GET /api/allarmi
-  // Porteneuve [3] pag. 87 "GET requests with CORS"
+  
   const fetchAlarms = async () => {
+    // Controlla se c'è un token prima di chiamare API protetta
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.log('Nessun token - skip caricamento allarmi');
+      return;
+    }
+
     try {
       console.log('Carico storico allarmi da backend...');
       const backendAlarms = await alarmsAPI.getAll();
@@ -73,9 +69,9 @@ export function AlarmProvider({ children }) {
         stato: alarm.stato,
         timestamp: alarm.timestamp
       }));
-      
+
       setAlarms(formattedAlarms);
-      
+
       // Calcola quanti allarmi sono "nuovo" (non visti)
       const newCount = formattedAlarms.filter(a => a.stato === 'nuovo').length;
       setUnseenCount(newCount);
@@ -87,30 +83,27 @@ export function AlarmProvider({ children }) {
   };
 
   // Funzione per aggiungere nuovo allarme alla lista
-  // Pattern "Event Append" - Porteneuve [3] pag. 94
+  
   const addAlarm = (alarm) => {
     console.log('Nuovo allarme aggiunto:', alarm);
     
     // Aggiungo nuovo allarme in testa all'array (eventi più recenti prima)
-    // Porteneuve [3] pag. 95 - "prepend for chronological order"
-    setAlarms(prevAlarms => [alarm, ...prevAlarms]);
     
+    setAlarms(prevAlarms => [alarm, ...prevAlarms]);
     // Incremento contatore non visti
     setUnseenCount(prevCount => prevCount + 1);
   };
 
-  // Funzione per marcare allarme come visto
-  // Porteneuve [3] pag. 98 - "State Update Pattern"
+  // Funzione per marcare allarme come "in gestione"
   const markAsSeen = async (alarmId) => {
     console.log('Marco allarme come visto:', alarmId);
-    
     try {
       // PATCH /api/allarmi/:id - aggiorna stato su backend
-      // Porteneuve [3] pag. 87 "PATCH requests with CORS"
-      await alarmsAPI.updateStatus(alarmId, 'gestione');
       
+      await alarmsAPI.updateStatus(alarmId, 'gestione');
+
       // Aggiorna stato dell'allarme specifico
-      // Porteneuve [3] pag. 97-99 - principio di immutabilità
+      
       setAlarms(prevAlarms =>
         prevAlarms.map(alarm => {
           if (alarm.id === alarmId) {
@@ -119,11 +112,34 @@ export function AlarmProvider({ children }) {
           return alarm;
         })
       );
-      
+
       // Decremento contatore (ma non deve andare sotto zero)
       setUnseenCount(prevCount => Math.max(0, prevCount - 1));
     } catch (error) {
       console.error('Errore aggiornamento allarme:', error);
+    }
+  };
+
+  // Funzione per marcare allarme come "risolto"
+  const markAsResolved = async (alarmId) => {
+    console.log('Marco allarme come risolto:', alarmId);
+    try {
+      // PATCH /api/allarmi/:id - aggiorna stato su backend
+      await alarmsAPI.updateStatus(alarmId, 'risolto');
+
+      // Aggiorna stato dell'allarme specifico
+      setAlarms(prevAlarms =>
+        prevAlarms.map(alarm => {
+          if (alarm.id === alarmId) {
+            return { ...alarm, stato: 'risolto' };
+          }
+          return alarm;
+        })
+      );
+
+      console.log('Allarme risolto con successo');
+    } catch (error) {
+      console.error('Errore risoluzione allarme:', error);
     }
   };
 
@@ -140,6 +156,7 @@ export function AlarmProvider({ children }) {
     unseenCount: unseenCount,
     addAlarm: addAlarm,
     markAsSeen: markAsSeen,
+    markAsResolved: markAsResolved,
     clearAlarms: clearAlarms,
     refreshAlarms: fetchAlarms
   };
@@ -155,7 +172,7 @@ export function AlarmProvider({ children }) {
 export function useAlarms() {
   const context = useContext(AlarmContext);
   if (!context) {
-    console.error('useAlarms va usato dentro AlarmProvider!');
+    throw new Error('useAlarms va usato dentro AlarmProvider!');
   }
   return context;
 }
