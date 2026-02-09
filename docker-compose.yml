@@ -1,0 +1,31 @@
+# Oltre i singoli container per backend e frontend, creo Docker Compose: accende sia il Backend che il Frontend e li mette in comunicazione tra loro
+
+version: '3.8'
+
+services:
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"   # Mappo la porta
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app    # Collego /backend e /app (se modifico il codice, il container viene subito sincronizzato senza dover riavviare)
+      - /app/node_modules    # eccetto node_modules (incompatibilità tra librerie Windows e Linux)
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"   # Mappo la porta
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api       # Trovao il Backend per eseguire le chiamate API
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app     # Collego /frontend e /app
+      - /app/node_modules
+
+    # Per mantenere il Docker acceso e non farlo spegnere subito dopo l'avvio, uso:
+    stdin_open: true
+    tty: true

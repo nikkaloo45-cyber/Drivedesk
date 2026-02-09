@@ -1,0 +1,7 @@
+# DOCKER IGNORE FILE: escludo file e directory non necessari dal contesto di build Dockerfile
+node_modules
+npm-debug.log
+build
+dist
+.git
+.env
