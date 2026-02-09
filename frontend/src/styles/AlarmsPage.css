@@ -1,0 +1,103 @@
+.alarms-page {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header pagina */
+.alarms-header {
+  margin-bottom: 24px;
+}
+
+.alarms-title {
+  font-weight: 600 !important;
+  color: #1a237e;
+  margin-bottom: 4px !important;
+}
+
+/* Filtri */
+.alarms-filters {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+/* Messaggio vuoto */
+.alarms-empty {
+  margin: 40px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tabella */
+.alarms-table-container {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.alarms-table-head {
+  background-color: #f5f5f5;
+}
+
+.alarms-table-head th {
+  font-weight: 600 !important;
+  color: #333;
+}
+
+.alarms-table-row {
+  transition: background-color 0.2s;
+}
+
+.alarms-table-row:hover {
+  background-color: #fafafa;
+}
+
+/* Riga allarme nuovo - sfondo rosso chiaro */
+.alarms-table-row.alarm-new {
+  background-color: #ffebee;
+}
+
+.alarms-table-row.alarm-new:hover {
+  background-color: #ffcdd2;
+}
+
+/* Colonne specifiche */
+.alarm-targa {
+  color: #1a237e;
+  font-size: 14px !important;
+}
+
+.alarm-causa {
+  color: #555;
+  max-width: 300px;
+}
+
+.alarm-timestamp {
+  color: #757575;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+  .alarms-page {
+    padding: 12px;
+  }
+
+  .alarms-filters {
+    flex-wrap: wrap;
+  }
+
+  .alarms-table-container {
+    overflow-x: auto;
+  }
+
+  .alarm-causa {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
