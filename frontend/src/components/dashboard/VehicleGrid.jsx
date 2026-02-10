@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Grid, Typography, Box, CircularProgress, Alert } from '@mui/material';
+import { Grid, Typography, Box, CircularProgress, Alert, TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import VehicleCard from './VehicleCard';
 import { vehiclesAPI } from '../../services/api';
 import '../../styles/VehicleGrid.css';
@@ -17,6 +18,8 @@ function VehicleGrid() {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   // Carico veicoli quando componente si monta
   useEffect(() => {
@@ -29,7 +32,6 @@ function VehicleGrid() {
   };
 
   // Zeimpekis [1] pag. 160 - "Real-time data fetching requirements"
-  // Modificato per usare backend reale invece di dati mock
   const getListaVeicoli = async () => {
     try {
       setLoading(true);
@@ -49,6 +51,17 @@ function VehicleGrid() {
     }
   };
   
+  // Filtra veicoli in base alla ricerca
+  const filteredVehicles = vehicles.filter((vehicle) => {
+   const search = searchTerm.toLowerCase();
+   return (
+     vehicle.targa.toLowerCase().includes(search) ||
+     vehicle.nomeAutista.toLowerCase().includes(search) ||
+     vehicle.numeroAutista.toLowerCase().includes(search) ||
+     vehicle.stato.toLowerCase().includes(search)
+    );
+  });
+
   // Zeimpekis [1] pag. 162 - "Grid layout for fleet overview"
   const renderGriglia = (datiVeicoli) => {
     console.log('renderGriglia() chiamato con', datiVeicoli.length, 'veicoli');
@@ -73,14 +86,35 @@ function VehicleGrid() {
     <Box>
       {/* Header con titolo */}
       <Box className="vehicle-grid-header">
+       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
         <Typography variant="h4" className="vehicle-grid-title">
-          Flotta Veicoli ({vehicles.length})
-        </Typography>
+        Flotta Veicoli ({filteredVehicles.length}{vehicles.length !== filteredVehicles.length ? ` di ${vehicles.length}` : ''})
+         </Typography>
+
+        {/* Campo ricerca */}
+        <TextField
+          label="Cerca veicolo"
+          variant="outlined"
+          size="small"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Targa, autista, numero..."
+          sx={{ minWidth: 280 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="action" />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
      </Box>
+
      
       {/* Griglia veicoli - Zeimpekis pag. 162 suggerisce layout responsive */}
       <Grid container spacing={3} className="custom-grid-container">
-        {vehicles.map((vehicle) => (
+        {filteredVehicles.map((vehicle) => (
           <Grid 
             key={vehicle._id}
             size={{ xs: 12, sm: 6, md: 4 }}
