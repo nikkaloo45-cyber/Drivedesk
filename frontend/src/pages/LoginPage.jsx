@@ -8,9 +8,11 @@ import {
   TextField,
   Button,
   Typography,
-  Alert
+  Alert,
+  Divider
 } from '@mui/material';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import EmailIcon from '@mui/icons-material/Email';
 import '../styles/LoginPage.css';
 
 function LoginPage() {
@@ -71,6 +73,9 @@ function LoginPage() {
     }
   };
 
+// email precompilata per richiesta account
+const mailtoLink = `mailto:it@drivedesk.it?subject=Richiesta Account DriveDesk&body=Buongiorno,%0D%0A%0D%0ARichiedo la creazione di un account Manager per il sistema DriveDesk.%0D%0A%0D%0ANome e Cognome: %0D%0AEmail aziendale: %0D%0AReparto: %0D%0AMotivazione: %0D%0A%0D%0AGrazie`;
+
   return (
     <Box className="login-container">
       <Card className="login-card">
@@ -129,6 +134,34 @@ function LoginPage() {
               {loading ? 'Accesso in corso...' : 'Accedi'}
             </Button>
           </form>
+
+          {/* Divider */}
+          <Divider sx={{ my: 3 }}>oppure</Divider>
+
+          {/* Sezione Richiesta Account */}
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Non hai le credenziali?
+            </Typography>
+
+            <Button
+              variant="outlined"
+              fullWidth
+              size="large"
+              startIcon={<EmailIcon />}
+              href={mailtoLink}
+              sx={{
+                color: 'primary.main',
+                borderColor: 'primary.main',
+                '&:hover': {
+                  borderColor: 'primary.dark',
+                  backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                }
+              }}
+            >
+              Richiedi credenziali di accesso
+            </Button>
+          </Box>
           
           {/* Info credenziali test */}
           <Box className="demo-box">
