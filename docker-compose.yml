@@ -1,7 +1,5 @@
 # Oltre i singoli container per backend e frontend, creo Docker Compose: accende sia il Backend che il Frontend e li mette in comunicazione tra loro
 
-version: '3.8'
-
 services:
 
   backend:
@@ -19,7 +17,7 @@ services:
     ports:
       - "5173:5173"   # Mappo la porta
     environment:
-      - REACT_APP_API_URL=http://localhost:5000/api       # Trovao il Backend per eseguire le chiamate API
+      - REACT_APP_API_URL=http://localhost:5000/api       # Trova il Backend per eseguire le chiamate API
     depends_on:
       - backend
     volumes:
