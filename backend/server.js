@@ -7,11 +7,17 @@ const socketIO = require('socket.io');
 
 const app = express();
 
+//Domini autorizzati
+const allowedOrigins = [
+    'http://localhost:5173',   // Locale
+    'drivedesk-eight.vercel.app'    //Vercel
+];
+
 //Creazione server HTTP e socket.io
 const server = http.createServer(app);
 const io = socketIO(server, {
     cors: {
-        origin: '*',  //consento connessioni da qualsiasi origine
+        origin: allowedOrigins,
         methods: ['GET', 'POST']
     }
 });
@@ -27,7 +33,9 @@ io.on('connection', socket => {
 
 //Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: allowedOrigins
+}));
 
 //Connessione al database
 mongoose.connect(process.env.MONGO_URI).then(() => console.log('Database connesso')).catch(err => console.log(err));
