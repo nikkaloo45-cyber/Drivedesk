@@ -1,5 +1,5 @@
 ### REGISTRAZIONE
-POST http://localhost:5000/api/auth/register
+POST http://localhost:5000/api/auth/registrazione
 Content-Type: application/json
 
 {

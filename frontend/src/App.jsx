@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import AlarmManager from './components/alarms/AlarmManager';
 import { AlarmProvider } from './contexts/AlarmContext';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -15,6 +16,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <AlarmProvider>
+          <AlarmManager />
           <Routes>
             {/* Login */}
             <Route path="/login" element={<LoginPage />} />

@@ -143,13 +143,6 @@ export function AlarmProvider({ children }) {
     }
   };
 
-  // Funzione per pulire tutti gli allarmi
-  const clearAlarms = () => {
-    console.log('Pulisco tutti gli allarmi');
-    setAlarms([]);
-    setUnseenCount(0);
-  };
-
   // Valori e funzioni da passare ai componenti
   const value = {
     alarms: alarms,
@@ -157,8 +150,6 @@ export function AlarmProvider({ children }) {
     addAlarm: addAlarm,
     markAsSeen: markAsSeen,
     markAsResolved: markAsResolved,
-    clearAlarms: clearAlarms,
-    refreshAlarms: fetchAlarms
   };
 
   return (

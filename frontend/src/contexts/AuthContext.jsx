@@ -8,7 +8,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // Controlla se c'è un token salvato all'avvio
   useEffect(() => {
@@ -26,7 +25,6 @@ export function AuthProvider({ children }) {
   // Funzione LOGIN
   const login = async (email, password) => {
     try {
-      setError(null);
       setLoading(true);
       const { token, user } = await authAPI.login(email, password);
       
@@ -39,7 +37,6 @@ export function AuthProvider({ children }) {
       
       return { success: true };
     } catch (err) {
-      setError(err.message);
       return { success: false, error: err.message };
     } finally {
       setLoading(false);
@@ -54,15 +51,13 @@ export function AuthProvider({ children }) {
     socketService.disconnect();
     setUser(null);
     setIsAuthenticated(false);
-    setError(null);
   };
 
   // Value passato ai componenti
   const value = { 
     user, 
     isAuthenticated, 
-    loading, 
-    error,
+    loading,
     login,
     logout
   };

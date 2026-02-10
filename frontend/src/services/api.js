@@ -47,15 +47,7 @@ export const authAPI = {
       body: JSON.stringify({ email, password })
     });
   },
-
-  // POST /api/auth/register
-  register: async (email, password, ruolo = 'Manager') => {
-    return await apiFetch('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({ email, password, ruolo })
-    });
-  }
-};
+};  
 
 // VEHICLES API
 
@@ -66,36 +58,6 @@ export const vehiclesAPI = {
       method: 'GET'
     });
   },
-
-  // GET /api/veicoli/:id
-  getById: async (id) => {
-    return await apiFetch(`/veicoli/${id}`, {
-      method: 'GET'
-    });
-  },
-
-  // POST /api/veicoli
-  create: async (vehicleData) => {
-    return await apiFetch('/veicoli', {
-      method: 'POST',
-      body: JSON.stringify(vehicleData)
-    });
-  },
-
-  // PUT /api/veicoli/:id
-  update: async (id, vehicleData) => {
-    return await apiFetch(`/veicoli/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(vehicleData)
-    });
-  },
-
-  // DELETE /api/veicoli/:id
-  delete: async (id) => {
-    return await apiFetch(`/veicoli/${id}`, {
-      method: 'DELETE'
-    });
-  }
 };
 
 // ALARMS API
@@ -116,16 +78,3 @@ export const alarmsAPI = {
     });
   }
 };
-
-// TELEMETRY API
-
-export const telemetryAPI = {
-  // POST /api/telemetria (no auth - sensori IoT)
-  sendData: async (telemetryData) => {
-    return await apiFetch('/telemetria', {
-      method: 'POST',
-      body: JSON.stringify(telemetryData)
-    });
-  }
-};
-
